@@ -4,21 +4,35 @@ public class Game {
 
     public void start(String commandString)
     {
+        String[] lines = getCmdLines(commandString);
+
+        Area mars = buildAreaWithString(lines[0]);
+        for (int seq = 1; seq < lines.length; seq+=2)
+        {
+            runEachRover(mars, lines[seq], lines[seq+1]);
+        }
+    }
+
+    private String[] getCmdLines(String commandString) {
         if (commandString == null) {
             throw new IllegalArgumentException("command is null");
         }
 
-        String[] lines = commandString.split("\n");
-        Area mars = buildAreaWithString(lines[0]);
+        String[] lines =  commandString.split("\n");
 
-        for (int seq = 1; seq < lines.length; seq+=2)
-        {
-            Rover rover = new Rover(mars);
-            rover.setCommand(lines[seq], lines[seq+1]);
-            rover.start();
-
-            System.out.println(rover.getResponse().toString());
+        if ((lines.length < 3) || (lines.length % 2 != 1)) {
+            throw new IllegalArgumentException("Invalid command string : " +  commandString);
         }
+
+        return lines;
+    }
+
+    private void runEachRover(Area area, String landCommand, String moveCommand) {
+        Rover rover = new Rover(area);
+        rover.setCommand(landCommand, moveCommand);
+        rover.start();
+
+        System.out.println(rover.getResponse().toString());
     }
 
     private Area buildAreaWithString(String commandString)
