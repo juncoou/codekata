@@ -10,7 +10,7 @@ public class MarsRoverTest {
         Area mars = new Area(5, 5);
 
         Rover rover = new Rover(mars);
-        rover.setCommand("33 E\nMMM\n");
+        rover.setCommand("33 E", "MMM");
 
         rover.start();
 
@@ -25,7 +25,7 @@ public class MarsRoverTest {
         Area mars = new Area(5, 5);
 
         Rover rover = new Rover(mars);
-        rover.setCommand("10 W\nMMM\n");
+        rover.setCommand("10 W", "MMM");
 
         rover.start();
 
@@ -39,14 +39,14 @@ public class MarsRoverTest {
         Area mars = new Area(5, 5);
 
         Rover first = new Rover(mars);
-        first.setCommand("33 E\nMMM\n");
+        first.setCommand("33 E", "MMM");
         first.start();
         Response resp = first.getResponse();
 
         Assert.assertEquals("5 3 E RIP", resp.toString());
 
         Rover second = new Rover(mars);
-        second.setCommand("33 E\nMMMMR\n");
+        second.setCommand("33 E", "MMMMR");
         second.start();
         resp = second.getResponse();
 
@@ -59,7 +59,7 @@ public class MarsRoverTest {
         Area mars = new Area(5, 5);
 
         Rover rover = new Rover(mars);
-        rover.setCommand("12 N\nLMLMLMLMM\n");
+        rover.setCommand("12 N", "LMLMLMLMM");
 
         rover.start();
 
@@ -73,7 +73,7 @@ public class MarsRoverTest {
         Area mars = new Area(5, 3);
 
         Rover rover = new Rover(mars);
-        rover.setCommand("33 E\nL\n");
+        rover.setCommand("33 E", "L");
 
         rover.start();
         Response resp = rover.getResponse();
@@ -86,7 +86,7 @@ public class MarsRoverTest {
         Area mars = new Area(5, 3);
 
         Rover rover = new Rover(mars);
-        rover.setCommand("73 E\nL\n");
+        rover.setCommand("73 E", "L");
 
         rover.start();
 
@@ -97,6 +97,6 @@ public class MarsRoverTest {
         Area mars = new Area(5, 3);
 
         Rover rover = new Rover(mars);
-        rover.setCommand("1024 E\nL\n");
+        rover.setCommand("1024 E", "L");
     }
 }

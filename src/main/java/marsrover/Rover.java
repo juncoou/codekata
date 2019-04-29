@@ -2,6 +2,7 @@ package marsrover;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.function.Supplier;
 
@@ -24,11 +25,9 @@ public class Rover {
         this.area = area;
     }
 
-    public void setCommand(String commandString) {
-        String[] strings = extractCommandString(commandString);
-
-        parseLandingCommand(strings[0]);
-        parseMoveCommand(strings[1]);
+    public void setCommand(String landCmd, String moveCmd) {
+        parseLandingCommand(landCmd);
+        parseMoveCommand(moveCmd);
     }
 
     public void start() {
@@ -43,14 +42,6 @@ public class Rover {
 
     public Response getResponse() {
         return response;
-    }
-
-    private String[] extractCommandString(String commandString) {
-        String[] lines = commandString.split("\n");
-        if (lines.length != 2) {
-            throw new IllegalArgumentException("Invalid command string : " + commandString);
-        }
-        return lines;
     }
 
     private void parseLandingCommand(String commandString) {
