@@ -93,10 +93,18 @@ public class MarsRoverTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testInvalidCommand() {
+    public void testInvalidLandCommand() {
         Area mars = new Area(5, 3);
 
         Rover rover = new Rover(mars);
         rover.setCommand("1024 E", "L");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidMoveCommand() {
+        Area mars = new Area(5, 3);
+
+        Rover rover = new Rover(mars);
+        rover.setCommand("10 E", "U");
     }
 }
