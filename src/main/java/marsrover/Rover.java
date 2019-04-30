@@ -58,12 +58,7 @@ public class Rover {
             throw new IllegalArgumentException("Invalid land command : " + commandString);
         }
 
-
-        int x = Integer.parseInt(commandString.substring(0, 1));
-        int y = Integer.parseInt(commandString.substring(1, 2));
-        Position.Direction direction = Position.Direction.valueOf(commandString.substring(3, 4));
-
-        landPosition = new Position(x, y, direction);
+        landPosition = Position.parsePosition(commandString);
     }
 
     private void parseMoveCommand(String commandString) {

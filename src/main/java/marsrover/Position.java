@@ -32,6 +32,21 @@ public class Position {
         this.direction = pos.direction;
     }
 
+    public static Position parsePosition(String value) {
+        if (!value.matches("\\d{2} [NESW]")) {
+            throw new IllegalArgumentException("Invalid position value : " + value);
+        }
+
+
+        int x = Integer.parseInt(value.substring(0, 1));
+        int y = Integer.parseInt(value.substring(1, 2));
+        Direction direction = Direction.valueOf(value.substring(3, 4));
+
+        Position position = new Position(x, y, direction);
+
+        return position;
+    }
+
     public int getX() {
         return x;
     }
@@ -49,11 +64,11 @@ public class Position {
         Position forwardPos = new Position(this);
 
         forwardPos.x = x +
-                ((direction == Position.Direction.E) ? 1 : 0) +
-                ((direction == Position.Direction.W) ? -1 : 0);//不判断方向，直接计算
+                ((direction == Direction.E) ? 1 : 0) +
+                ((direction == Direction.W) ? -1 : 0);//不判断方向，直接计算
         forwardPos.y = y +
-                ((direction == Position.Direction.N) ? 1 : 0) +
-                ((direction == Position.Direction.S) ? -1 : 0);
+                ((direction == Direction.N) ? 1 : 0) +
+                ((direction == Direction.S) ? -1 : 0);
 
         return forwardPos;
     }

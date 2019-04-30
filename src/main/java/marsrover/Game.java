@@ -6,7 +6,7 @@ public class Game {
     {
         String[] lines = getCmdLines(commandString);
 
-        Mars mars = buildAreaWithString(lines[0]);
+        Mars mars = buildMarsWithString(lines[0]);
         for (int seq = 1; seq < lines.length; seq+=2)
         {
             runEachRover(mars, lines[seq], lines[seq+1]);
@@ -35,7 +35,7 @@ public class Game {
         System.out.println(rover.getResponse().toString());
     }
 
-    private Mars buildAreaWithString(String commandString)
+    private Mars buildMarsWithString(String commandString)
     {
         if (!commandString.matches("\\d{2}")){
             throw new IllegalArgumentException("Invalid map command : " + commandString);
