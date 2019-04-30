@@ -1,17 +1,14 @@
 package marsrover;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
-import java.util.function.Supplier;
 
 public class Rover {
     public enum CommandToken {L, R, M}
 
     public enum RoverStatus {UNLANDING, OK, RIP}
 
-    private Area area;
+    private Mars mars;
     private RoverStatus status = RoverStatus.UNLANDING;
     private Position landPosition;
     private Position currPosition;
@@ -21,8 +18,8 @@ public class Rover {
     private Response response;
 
 
-    public Rover(Area area) {
-        this.area = area;
+    public Rover(Mars mars) {
+        this.mars = mars;
     }
 
     public void setCommand(String landCmd, String moveCmd) {
@@ -33,11 +30,23 @@ public class Rover {
     public void start() {
         land();
 
-        while ((status == RoverStatus.OK) && (commands.peek() != null)) {
-            handle(commands.poll());
+        while (isHealth() && hasMoreCommand()) {
+            handle(nextCommand());
         }
 
         setResponse();
+    }
+
+    private boolean isHealth() {
+        return status == RoverStatus.OK;
+    }
+
+    private CommandToken nextCommand() {
+        return commands.poll();
+    }
+
+    private boolean hasMoreCommand() {
+        return commands.peek() != null;
     }
 
     public Response getResponse() {
@@ -82,7 +91,7 @@ public class Rover {
     }
 
     private void land() {
-        area.land(landPosition.getX(), landPosition.getY());
+        mars.land(landPosition.getX(), landPosition.getY());
         status = RoverStatus.OK;
         currPosition = new Position(landPosition);
     }
@@ -106,37 +115,22 @@ public class Rover {
 
 
     private void move() {
-        if (area.hasLamp(currPosition.getX(), currPosition.getY(), currPosition.getDirection())) {//有灯，就不动
-            return;
+        if (!mars.hasLamp(currPosition)) {//前方畅通
+            Position next = currPosition.forward();
+            if (mars.moveTo(next)) {//成功移动
+                currPosition = next;
+            } else {//挂了，放灯
+                status = RoverStatus.RIP;
+                mars.setLamp(currPosition); //在当前姿态向前移动时出问题
+            }
         }
-
-        Position next = getNextPos();
-        if (area.moveTo(next.getX(), next.getY())) {//成功移动
-            currPosition = next;
-        } else {//挂了，放灯
-            status = RoverStatus.RIP;
-            area.setLamp(currPosition.getX(), currPosition.getY(), currPosition.getDirection()); //在x，y，向direction移动时出问题
-        }
-    }
-
-    private Position getNextPos() {
-        Position next = new Position(currPosition);
-
-        next.setX(currPosition.getX()
-                + ((currPosition.getDirection() == Position.Direction.E) ? 1 : 0)
-                + ((currPosition.getDirection() == Position.Direction.W) ? -1 : 0));//不判断方向，直接计算
-        next.setY(currPosition.getY()
-                + ((currPosition.getDirection() == Position.Direction.N) ? 1 : 0)
-                + ((currPosition.getDirection() == Position.Direction.S) ? -1 : 0));
-
-        return next;
     }
 
     private void turnLeft() {
-        currPosition.setDirection(currPosition.getDirection().left());
+        currPosition = currPosition.leftRotation();
     }
 
     private void turnRight() {
-        currPosition.setDirection(currPosition.getDirection().right());
+        currPosition = currPosition.rightRotation();
     }
 }

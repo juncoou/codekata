@@ -7,7 +7,7 @@ public class MarsRoverTest {
 
     @Test
     public void testRIP() {
-        Area mars = new Area(5, 5);
+        Mars mars = new Mars(5, 5);
 
         Rover rover = new Rover(mars);
         rover.setCommand("33 E", "MMM");
@@ -22,7 +22,7 @@ public class MarsRoverTest {
 
     @Test
     public void testNegPosition() {
-        Area mars = new Area(5, 5);
+        Mars mars = new Mars(5, 5);
 
         Rover rover = new Rover(mars);
         rover.setCommand("10 W", "MMM");
@@ -36,7 +36,7 @@ public class MarsRoverTest {
 
     @Test
     public void testGuardByAnotherCar() {
-        Area mars = new Area(5, 5);
+        Mars mars = new Mars(5, 5);
 
         Rover first = new Rover(mars);
         first.setCommand("33 E", "MMM");
@@ -56,7 +56,7 @@ public class MarsRoverTest {
 
     @Test
     public void testHappyPath() {
-        Area mars = new Area(5, 5);
+        Mars mars = new Mars(5, 5);
 
         Rover rover = new Rover(mars);
         rover.setCommand("12 N", "LMLMLMLMM");
@@ -70,7 +70,7 @@ public class MarsRoverTest {
 
     @Test
     public void landSuccessful() {
-        Area mars = new Area(5, 3);
+        Mars mars = new Mars(5, 3);
 
         Rover rover = new Rover(mars);
         rover.setCommand("33 E", "L");
@@ -83,7 +83,7 @@ public class MarsRoverTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void landFail() {
-        Area mars = new Area(5, 3);
+        Mars mars = new Mars(5, 3);
 
         Rover rover = new Rover(mars);
         rover.setCommand("73 E", "L");
@@ -94,7 +94,7 @@ public class MarsRoverTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidLandCommand() {
-        Area mars = new Area(5, 3);
+        Mars mars = new Mars(5, 3);
 
         Rover rover = new Rover(mars);
         rover.setCommand("1024 E", "L");
@@ -102,9 +102,9 @@ public class MarsRoverTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidMoveCommand() {
-        Area mars = new Area(5, 3);
+        Mars mars = new Mars(5, 3);
 
         Rover rover = new Rover(mars);
-        rover.setCommand("10 E", "U");
+        rover.setCommand("10 E", "MLRU");
     }
 }

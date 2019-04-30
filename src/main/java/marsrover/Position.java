@@ -44,16 +44,34 @@ public class Position {
         return direction;
     }
 
-    public void setX(int x) {
-        this.x = x;
+
+    public Position forward() {
+        Position forwardPos = new Position(this);
+
+        forwardPos.x = x +
+                ((direction == Position.Direction.E) ? 1 : 0) +
+                ((direction == Position.Direction.W) ? -1 : 0);//不判断方向，直接计算
+        forwardPos.y = y +
+                ((direction == Position.Direction.N) ? 1 : 0) +
+                ((direction == Position.Direction.S) ? -1 : 0);
+
+        return forwardPos;
     }
 
-    public void setY(int y) {
-        this.y = y;
+    public Position leftRotation() {
+        Position lrPos = new Position(this);
+
+        lrPos.direction = direction.left();
+
+        return lrPos;
     }
 
-    public void setDirection(Direction direction) {
-        this.direction = direction;
+    public Position rightRotation() {
+        Position rrPos = new Position(this);
+
+        rrPos.direction = direction.right();
+
+        return rrPos;
     }
 
 }
