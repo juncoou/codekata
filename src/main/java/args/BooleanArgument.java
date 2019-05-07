@@ -1,5 +1,7 @@
 package args;
 
+import java.util.Objects;
+
 public class BooleanArgument extends Argument {
     private Boolean value;
 
@@ -14,7 +16,20 @@ public class BooleanArgument extends Argument {
         return value;
     }
 
-    public static class Builder extends ArgumentBuilder {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BooleanArgument that = (BooleanArgument) o;
+        return value.equals(that.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
+    }
+
+    static public class Builder extends ArgumentBuilder {
         private Boolean value = Boolean.TRUE;
 
         @Override

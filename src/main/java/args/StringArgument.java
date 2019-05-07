@@ -3,10 +3,10 @@ package args;
 import java.util.Objects;
 
 public class StringArgument extends Argument {
-    private final String value;
+    private String value;
 
-    public StringArgument(String flag, String value) {
-        super(flag);
+    public StringArgument(String name, String value) {
+        super(name);
         this.value = value;
     }
 

@@ -3,33 +3,61 @@ package args;
 import java.util.stream.Stream;
 
 public class ArgumentParser {
-    final private String SEPARATE_CHAR_OPTIONS = "[;]";
-    final private String SEPARATE_CHAR_OPTIONPART = "[|]";
-    final private String FLAG_PREFIX = "-";
+    final static private String SEPARATE_CHAR_OPTIONS = "[;]";
+    final static private String SEPARATE_CHAR_OPTIONPART = "[|]";
+    final static private String FLAG_PREFIX = "-";
 
-    private final int PART_FLAG = 0;
-    private final int PART_TYPE = 1;
-    private final int PART_DEFAULT = 2;
+    final static private int PART_FLAG = 0;
+    final static private int PART_TYPE = 1;
+    final static private int PART_DEFAULTVALUE = 2;
+    final static private int OPTION_PARTS = 3;
 
     private ArgumentGroup defaultArgs;
 
-    public ArgumentParser(String schema) {
-        initWithSchema(schema);
+    private ArgumentParser() {
+        defaultArgs = new ArgumentGroup();
     }
 
-    public ArgumentGroup parse(String s) {
+    /**
+     * 根据传入的Schema来初始化分析器
+     *
+     * @param schema 每个参数由3段构成，以"|"分隔，多个参数以";"分隔 {参数名}|{参数类型}|{默认值}
+     */
+    static public ArgumentParser buildWithSchema(String schema) {
+        if (schema.trim().length() == 0) {
+            throw new IllegalArgumentException("Illegal schema : " + schema);
+        }
+
+        ArgumentParser result = new ArgumentParser();
+
+        Stream.of(schema.split(SEPARATE_CHAR_OPTIONS)).filter(w -> w.trim().length() > 0).forEach(s -> {
+            String[] part = s.split(SEPARATE_CHAR_OPTIONPART);
+
+            if (part.length != OPTION_PARTS) {
+                throw new IllegalArgumentException("Illegal Argument schema : " + s);
+            }
+
+            ArgumentBuilder builder = ArgumentBuilderFactory.getBuilder(part[PART_TYPE]);
+            result.defaultArgs.put(builder.withName(part[PART_FLAG]).withValue(part[PART_DEFAULTVALUE]).build());
+        });
+
+        return result;
+    }
+
+
+    public ArgumentGroup parse(String argumentString) {
         ArgumentGroup result = defaultArgs.clone();
 
-        TokenSet ts = new TokenSet(s);
+        TokenSet ts = new TokenSet(argumentString);
 
         while (ts.hasNext()) {
-            String flag = getFlag(ts.next());
+            String name = getName(ts.next());
 
-            ArgumentBuilder builder = getBuilder(fullNameOf(defaultArgs.get(flag)));
-            builder.withName(flag);
+            ArgumentBuilder builder = getBuilder(defaultArgs.get(name));
+            builder.withName(name);
             if (builder.needValue()) {
                 if (!ts.hasNext()) {
-                    throw new IllegalArgumentException("Invalid command line : " + s);
+                    throw new IllegalArgumentException("Invalid argument string : " + argumentString);
                 }
 
                 builder.withValue(getValue(ts.next()));
@@ -45,9 +73,9 @@ public class ArgumentParser {
         return defaultArgs.clone();
     }
 
-    private String getFlag(String word) {
+    private String getName(String word) {
         if (word.indexOf(FLAG_PREFIX) < 0) {
-            throw new IllegalArgumentException("Invalid Argument flag : " + word);
+            throw new IllegalArgumentException("Illegal Argument flag : " + word);
         }
         return word.substring(word.indexOf(FLAG_PREFIX) + 1).trim();
     }
@@ -56,30 +84,8 @@ public class ArgumentParser {
         return word.trim();
     }
 
-    private ArgumentBuilder getBuilder(String ArgumentClassName) {
-        try {
-            Class<?> cl = Class.forName(ArgumentClassName + "$Builder");
-            return (ArgumentBuilder) cl.newInstance();
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Illegal ArgumentType " + ArgumentClassName);
-        }
+    private ArgumentBuilder getBuilder(Argument argument) {
+        return ArgumentBuilderFactory.getBuilder(argument.getClass());
     }
 
-    private String fullNameOf(String ArgumentType) {
-        return getClass().getPackage().getName() + "." + ArgumentType + "Argument";
-    }
-
-    private String fullNameOf(Argument argument) {
-        return argument.getClass().getName();
-    }
-
-    private void initWithSchema(String schema) {
-        defaultArgs = new ArgumentGroup();
-
-        Stream.of(schema.split(SEPARATE_CHAR_OPTIONS)).peek(s -> {
-            String[] part = s.split(SEPARATE_CHAR_OPTIONPART);
-            ArgumentBuilder builder = getBuilder(fullNameOf(part[PART_TYPE]));
-            defaultArgs.put(builder.withName(part[PART_FLAG]).withValue(part[PART_DEFAULT]).build());
-        }).count();
-    }
 }

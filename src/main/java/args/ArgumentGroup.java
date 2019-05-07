@@ -1,9 +1,11 @@
 package args;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class ArgumentGroup {
-    HashMap<String, Argument> args = new HashMap<>();
+    private HashMap<String, Argument> args = new HashMap<>();
 
     public void put(Argument argument) {
         args.put(argument.getName(), argument);
@@ -15,6 +17,10 @@ public class ArgumentGroup {
         }
 
         return args.get(name);
+    }
+
+    public Collection<Argument> getAllArgument() {
+        return Collections.unmodifiableCollection(args.values());
     }
 
     @Override

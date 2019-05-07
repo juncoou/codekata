@@ -1,11 +1,12 @@
 package args;
 
-public class IntegerArgument extends Argument {
+import java.util.Objects;
 
+public class IntegerArgument extends Argument {
     private Integer value;
 
-    public IntegerArgument(String flag, Integer value) {
-        super(flag);
+    public IntegerArgument(String name, Integer value) {
+        super(name);
         this.value = value;
     }
 
@@ -14,11 +15,20 @@ public class IntegerArgument extends Argument {
         return value;
     }
 
-    public static IntegerArgument valueOf(String flag, String value) {
-        return new IntegerArgument(flag, Integer.valueOf(value));
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IntegerArgument that = (IntegerArgument) o;
+        return value.equals(that.value);
     }
 
-    public static class Builder extends ArgumentBuilder {
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
+    }
+
+    static public class Builder extends ArgumentBuilder {
         private Integer value = 0;
 
         @Override

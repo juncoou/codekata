@@ -1,7 +1,7 @@
 package args;
 
 abstract public class Argument {
-    private final String name;
+    private String name;
 
     public Argument(String name) {
         this.name = name;
@@ -9,7 +9,6 @@ abstract public class Argument {
 
     public String getName() {
         return name;
-
     }
 
     abstract public Object getValue();

@@ -3,7 +3,7 @@ package args;
 import java.util.stream.Stream;
 
 public class TokenSet {
-    final public String SEPARATE_CHAR = "[ ]";
+    final static public String SEPARATE_CHAR = "[ ]";
 
     private int currPos = 0;
     private String[] tokens;
