@@ -51,25 +51,33 @@ public class ArgumentParser {
         TokenSet ts = new TokenSet(argumentString);
 
         while (ts.hasNext()) {
-            String name = getName(ts.next());
-
-            ArgumentBuilder builder = getBuilder(defaultArgs.get(name));
-            builder.withName(name);
-            if (builder.needValue()) {
-                if (!ts.hasNext()) {
-                    throw new IllegalArgumentException("Invalid argument string : " + argumentString);
-                }
-
-                builder.withValue(getValue(ts.next()));
-            }
-
-            result.put(builder.build());
+            result.put(buildArgument(ts, argumentString));
         }
 
         return result;
     }
 
-    public ArgumentGroup getDefaultArgs() {
+    private Argument buildArgument(TokenSet ts, String argumentString) {
+        String argumentName = getName(ts.next());
+
+        ArgumentBuilder builder = getBuilder(defaultArgs.get(argumentName));
+        builder.withName(argumentName);
+        if (builder.needValue()) {
+            assertHasValue(ts.hasNext(), argumentString);
+
+            builder.withValue(getValue(ts.next()));
+        }
+
+        return builder.build();
+    }
+
+    private void assertHasValue(boolean hasNext, String argumentString) {
+        if (!hasNext) {
+            throw new IllegalArgumentException("Invalid argument string : " + argumentString);
+        }
+    }
+
+    public ArgumentGroup getDefaultArguments() {
         return defaultArgs.clone();
     }
 

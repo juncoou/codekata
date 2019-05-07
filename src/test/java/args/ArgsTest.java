@@ -11,7 +11,7 @@ public class ArgsTest {
     public void initParser() {
         ArgumentParser parser = ArgumentParser.buildWithSchema("l|Boolean|False;p|Integer|0;d|String| ");
 
-        ArgumentGroup args = parser.getDefaultArgs();
+        ArgumentGroup args = parser.getDefaultArguments();
         assertEquals(Boolean.FALSE, ((BooleanArgument) args.get("l")).getValue());
         assertEquals(Integer.valueOf(0), ((IntegerArgument) args.get("p")).getValue());
         assertEquals(" ", ((StringArgument) args.get("d")).getValue());
